@@ -1,11 +1,7 @@
-FROM node:19.9.0-alpine
-
+FROM node:20.11.0
 WORKDIR /home/app
-
+COPY package*.json ./
+RUN npm install
 COPY . ./
-
-RUN npm i
-
 EXPOSE 3333
-
 CMD ["npm", "run", "dev"]
