@@ -20,8 +20,8 @@ export class CategoriesController {
       const result = await service.create({ title, color });
 
       return res.status(201).json(result);
-    } catch (err) {
-      next(err);
+    } catch (error) {
+      next(error);
     }
   }
 }

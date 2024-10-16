@@ -3,7 +3,6 @@ import express, { json } from 'express';
 import { setupMongo } from './database';
 import { routes } from './routes';
 import { errorHandler } from './middlewares/error-handler.middleware';
-
 setupMongo().then(() => {
   const app = express();
 

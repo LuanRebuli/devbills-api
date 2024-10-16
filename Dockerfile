@@ -1,7 +1,10 @@
-FROM node:20.11.0
+FROM node:20
 WORKDIR /home/app
-COPY package*.json ./
-RUN npm install
+
 COPY . ./
+
+RUN npm i
+
 EXPOSE 3333
+
 CMD ["npm", "run", "dev"]
