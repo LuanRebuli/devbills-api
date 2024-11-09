@@ -1,6 +1,7 @@
 import {
-  GetDashBoardDTO,
-  getFinancialEvolutionDTO,
+  CreateTransactionDTO,
+  GetDashboardDTO,
+  GetFinancialEvolutionDTO,
   IndexTransactionsDTO,
 } from '../../dtos/transactions.dto';
 import { Balance } from '../../entities/balance.entity';
@@ -63,7 +64,7 @@ export class TransactionsRepository {
     return transactionsMap;
   }
 
-  async getBalance({ beginDate, endDate }: GetDashBoardDTO): Promise<Balance> {
+  async getBalance({ beginDate, endDate }: GetDashboardDTO): Promise<Balance> {
     const aggregate = this.model.aggregate<Balance>();
 
     if (beginDate || endDate) {
@@ -99,16 +100,16 @@ export class TransactionsRepository {
       })
       .group({
         _id: null,
-        income: {
+        incomes: {
           $sum: '$income',
         },
-        expense: {
+        expenses: {
           $sum: '$expense',
         },
       })
       .addFields({
         balance: {
-          $subtract: ['$income', '$expense'],
+          $subtract: ['$incomes', '$expenses'],
         },
       });
 
@@ -118,7 +119,7 @@ export class TransactionsRepository {
   async getExpenses({
     beginDate,
     endDate,
-  }: GetDashBoardDTO): Promise<Expense[]> {
+  }: GetDashboardDTO): Promise<Expense[]> {
     const aggregate = this.model.aggregate<Expense>();
 
     const matchParams: Record<string, unknown> = {
@@ -150,14 +151,14 @@ export class TransactionsRepository {
 
   async getFinancialEvolution({
     year,
-  }: getFinancialEvolutionDTO): Promise<Balance[]> {
+  }: GetFinancialEvolutionDTO): Promise<Balance[]> {
     const aggregate = this.model.aggregate<Balance>();
 
     const result = await aggregate
       .match({
         date: {
-          $gte: new Date('${year}-01-01'),
-          $lte: new Date('${year}-12-31'),
+          $gte: new Date(`${year}-01-01`),
+          $lte: new Date(`${year}-12-31`),
         },
       })
       .project({
@@ -189,16 +190,16 @@ export class TransactionsRepository {
       })
       .group({
         _id: ['$year', '$month'],
-        income: {
+        incomes: {
           $sum: '$income',
         },
-        expense: {
+        expenses: {
           $sum: '$expense',
         },
       })
       .addFields({
         balance: {
-          $subtract: ['$income', '$expense'],
+          $subtract: ['$incomes', '$expenses'],
         },
       })
       .sort({

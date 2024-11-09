@@ -1,23 +1,23 @@
 import { NextFunction, Response } from 'express';
-
 import { StatusCodes } from 'http-status-codes';
-import { TransactionService } from '../services/transactions.service';
+
 import {
   CreateTransactionDTO,
-  GetDashBoardDTO,
-  getFinancialEvolutionDTO,
+  GetDashboardDTO,
+  GetFinancialEvolutionDTO,
   IndexTransactionsDTO,
 } from '../dtos/transactions.dto';
+import { TransactionsService } from '../services/transactions.service';
 import { BodyRequest, QueryRequest } from './types';
 
 export class TransactionsController {
-  constructor(private transactionsService: TransactionService) {}
+  constructor(private transactionsService: TransactionsService) {}
 
   create = async (
     req: BodyRequest<CreateTransactionDTO>,
     res: Response,
     next: NextFunction,
-  ) => {
+  ): Promise<void> => {
     try {
       const { title, amount, categoryId, date, type } = req.body;
 
@@ -29,9 +29,9 @@ export class TransactionsController {
         type,
       });
 
-      return res.status(StatusCodes.CREATED).json(result);
-    } catch (error) {
-      next(error);
+      res.status(StatusCodes.CREATED).json(result);
+    } catch (err) {
+      next(err);
     }
   };
 
@@ -39,9 +39,10 @@ export class TransactionsController {
     req: QueryRequest<IndexTransactionsDTO>,
     res: Response,
     next: NextFunction,
-  ) => {
+  ): Promise<void> => {
     try {
       const { title, categoryId, beginDate, endDate } = req.query;
+
       const result = await this.transactionsService.index({
         title,
         categoryId,
@@ -49,44 +50,46 @@ export class TransactionsController {
         endDate,
       });
 
-      return res.status(StatusCodes.OK).json(result);
-    } catch (error) {
-      next(error);
+      res.status(StatusCodes.OK).json(result);
+    } catch (err) {
+      next(err);
     }
   };
 
   getDashboard = async (
-    req: QueryRequest<GetDashBoardDTO>,
+    req: QueryRequest<GetDashboardDTO>,
     res: Response,
     next: NextFunction,
-  ) => {
+  ): Promise<void> => {
     try {
       const { beginDate, endDate } = req.query;
+
       const result = await this.transactionsService.getDashboard({
         beginDate,
         endDate,
       });
 
-      return res.status(StatusCodes.OK).json(result);
-    } catch (error) {
-      next(error);
+      res.status(StatusCodes.OK).json(result);
+    } catch (err) {
+      next(err);
     }
   };
 
   getFinancialEvolution = async (
-    req: QueryRequest<getFinancialEvolutionDTO>,
+    req: QueryRequest<GetFinancialEvolutionDTO>,
     res: Response,
     next: NextFunction,
-  ) => {
+  ): Promise<void> => {
     try {
       const { year } = req.query;
+
       const result = await this.transactionsService.getFinancialEvolution({
         year,
       });
 
-      return res.status(StatusCodes.OK).json(result);
-    } catch (error) {
-      next(error);
+      res.status(StatusCodes.OK).json(result);
+    } catch (err) {
+      next(err);
     }
   };
 }

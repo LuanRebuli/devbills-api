@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+
 import { CategorySchema } from './category.schema';
 
 const TransactionSchema = new mongoose.Schema(

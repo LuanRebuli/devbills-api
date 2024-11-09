@@ -2,10 +2,10 @@ import { CategoriesRepository } from '../database/repositories/categories.reposi
 import { TransactionsRepository } from '../database/repositories/transactions.repository';
 import { CategoryModel } from '../database/schemas/category.schema';
 import { TransactionModel } from '../database/schemas/transactions.schema';
-import { TransactionService } from '../services/transactions.service';
+import { TransactionsService } from '../services/transactions.service';
 
 export class TransactionsFactory {
-  private static transactionsService: TransactionService;
+  private static transactionsService: TransactionsService;
 
   static getServiceInstance() {
     if (this.transactionsService) {
@@ -14,7 +14,7 @@ export class TransactionsFactory {
 
     const repository = new TransactionsRepository(TransactionModel);
     const categoriesRepository = new CategoriesRepository(CategoryModel);
-    const service = new TransactionService(repository, categoriesRepository);
+    const service = new TransactionsService(repository, categoriesRepository);
 
     this.transactionsService = service;
 

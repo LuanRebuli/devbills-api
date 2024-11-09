@@ -1,12 +1,12 @@
 import { Router } from 'express';
 
+import { TransactionsController } from '../controllers/transactions.controller';
 import {
-  createTransactionsSchema,
+  createTransactionSchema,
   getDashboardSchema,
   getFinancialEvolutionSchema,
   indexTransactionsSchema,
 } from '../dtos/transactions.dto';
-import { TransactionsController } from '../controllers/transactions.controller';
 import { TransactionsFactory } from '../factories/transactions.factory';
 import { ParamsType, validator } from '../middlewares/validator.middleware';
 
@@ -19,7 +19,7 @@ const controller = new TransactionsController(
 transactionsRoutes.post(
   '/',
   validator({
-    schema: createTransactionsSchema,
+    schema: createTransactionSchema,
     type: ParamsType.BODY,
   }),
   controller.create,
@@ -45,9 +45,5 @@ transactionsRoutes.get(
 
 transactionsRoutes.get(
   '/financial-evolution',
-  validator({
-    schema: getFinancialEvolutionSchema,
-    type: ParamsType.QUERY,
-  }),
   controller.getFinancialEvolution,
 );
